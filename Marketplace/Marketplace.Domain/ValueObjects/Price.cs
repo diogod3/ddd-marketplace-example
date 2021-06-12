@@ -1,15 +1,10 @@
-﻿using Marketplace.Framework.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace Marketplace.Domain.ValueObjects
 {
     public class Price : Money
     {
-        public Price(decimal amount) : base(amount)
+        public Price(decimal amount) : base(amount, "EUR", null)
         {
             if (amount < 0)
             {

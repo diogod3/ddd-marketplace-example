@@ -1,5 +1,5 @@
-﻿using Marketplace.Framework.Helpers;
-using System;
+﻿using System;
+using Marketplace.Framework.Helpers;
 
 namespace Marketplace.Domain.ValueObjects
 {
@@ -38,7 +38,10 @@ namespace Marketplace.Domain.ValueObjects
             return _value.Equals(other._value);
         }
 
-        public override int HashCode() => _value.GetHashCode();
+        public override int HashCode()
+        {
+            return _value.GetHashCode();
+        }
 
         #endregion
     }
