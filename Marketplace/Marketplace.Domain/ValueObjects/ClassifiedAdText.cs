@@ -4,11 +4,11 @@ using Marketplace.Framework.Helpers;
 
 namespace Marketplace.Domain.ValueObjects
 {
-    public class ClassifiedAdTitle : Value<ClassifiedAdTitle>
+    public class ClassifiedAdText : Value<ClassifiedAdText>
     {
         #region Fields
 
-        private const int ValueMaxLength = 100;
+        private const int ValueMaxLength = 1000;
 
         private readonly string _value;
 
@@ -20,7 +20,7 @@ namespace Marketplace.Domain.ValueObjects
 
         #region Initializers
 
-        private ClassifiedAdTitle(string value)
+        private ClassifiedAdText(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -30,7 +30,7 @@ namespace Marketplace.Domain.ValueObjects
             if (value.Length > ValueMaxLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(value),
-                    $"Title cannot be longer than {ValueMaxLength} characters");
+                    $"Text cannot be longer than {ValueMaxLength} characters");
             }
 
             _value = value;
@@ -40,28 +40,12 @@ namespace Marketplace.Domain.ValueObjects
 
         #region Public Methods
 
-        public static ClassifiedAdTitle FromString(string title)
+        public static ClassifiedAdText FromString(string title)
         {
             return new(title);
         }
 
-        public static ClassifiedAdTitle FromHtml(string htmlTitle)
-        {
-            var italicTag = (Html: (Open: "<i>", Close: "</i>"), Markdown: "*");
-            var boldTag = (Html: (Open: "<b>", Close: "</b>"), Markdown: "**");
-
-            var supportedTagsReplaced = htmlTitle
-                .Replace(italicTag.Html.Open, italicTag.Markdown)
-                .Replace(italicTag.Html.Close, italicTag.Markdown)
-                .Replace(boldTag.Html.Open, boldTag.Markdown)
-                .Replace(boldTag.Html.Close, boldTag.Markdown);
-
-            var title = Regex.Replace(supportedTagsReplaced, "<.*?>", string.Empty);
-
-            return new(title);
-        }
-
-        public override bool Equals(ClassifiedAdTitle other)
+        public override bool Equals(ClassifiedAdText other)
         {
             if (other is null)
             {
@@ -81,9 +65,9 @@ namespace Marketplace.Domain.ValueObjects
             return _value.GetHashCode();
         }
 
-        public static implicit operator string(ClassifiedAdTitle classifiedAdTitle)
+        public static implicit operator string(ClassifiedAdText classifiedAdText)
         {
-            return classifiedAdTitle._value;
+            return classifiedAdText._value;
         }
 
         #endregion

@@ -3,7 +3,7 @@ using Marketplace.Framework.Helpers;
 
 namespace Marketplace.Domain.ValueObjects
 {
-    public class ClassifiedAddId : Value<ClassifiedAddId>
+    public class ClassifiedAdId : Value<ClassifiedAdId>
     {
         #region Fields
 
@@ -13,7 +13,7 @@ namespace Marketplace.Domain.ValueObjects
 
         #region Initializers
 
-        public ClassifiedAddId(Guid value)
+        public ClassifiedAdId(Guid value)
         {
             if (value == default)
             {
@@ -23,7 +23,7 @@ namespace Marketplace.Domain.ValueObjects
             _value = value;
         }
 
-        public override bool Equals(ClassifiedAddId other)
+        public override bool Equals(ClassifiedAdId other)
         {
             if (other is null)
             {
@@ -41,6 +41,11 @@ namespace Marketplace.Domain.ValueObjects
         public override int HashCode()
         {
             return _value.GetHashCode();
+        }
+
+        public static implicit operator Guid(ClassifiedAdId classifiedAdId)
+        {
+            return classifiedAdId._value;
         }
 
         #endregion

@@ -34,6 +34,11 @@ namespace Marketplace.Domain.ValueObjects
             return _value.GetHashCode();
         }
 
+        public static implicit operator Guid(UserId userId)
+        {
+            return userId._value;
+        }
+
         #endregion
     }
 }
