@@ -1,21 +1,15 @@
-﻿using System;
-using Marketplace.Framework.Helpers;
+﻿using Marketplace.Framework.Helpers;
 
 namespace Marketplace.Domain.ValueObjects
 {
     public class CurrencyDetails : Value<CurrencyDetails>
     {
-        #region Fields
-
-        #endregion
-
         #region Properties
 
+        public static CurrencyDetails None = new() { InUse = false };
         public string CurrencyCode { get; set; }
         public bool InUse { get; set; }
         public int DecimalPlaces { get; set; }
-
-        public static CurrencyDetails None = new() {InUse = false};
 
         #endregion
 
@@ -40,18 +34,10 @@ namespace Marketplace.Domain.ValueObjects
 
         public override int HashCode()
         {
-            return CurrencyCode.GetHashCode() + 
-                   InUse.GetHashCode() + 
+            return CurrencyCode.GetHashCode() +
+                   InUse.GetHashCode() +
                    DecimalPlaces.GetHashCode();
         }
-
-        #endregion
-
-        #region Public Methods
-
-        #endregion
-
-        #region Private Methods
 
         #endregion
     }

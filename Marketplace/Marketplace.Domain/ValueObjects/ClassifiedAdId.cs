@@ -1,5 +1,5 @@
-﻿using System;
-using Marketplace.Framework.Helpers;
+﻿using Marketplace.Framework.Helpers;
+using System;
 
 namespace Marketplace.Domain.ValueObjects
 {
@@ -23,6 +23,11 @@ namespace Marketplace.Domain.ValueObjects
             _value = value;
         }
 
+        public static implicit operator Guid(ClassifiedAdId classifiedAdId)
+        {
+            return classifiedAdId._value;
+        }
+
         public override bool Equals(ClassifiedAdId other)
         {
             if (other is null)
@@ -41,11 +46,6 @@ namespace Marketplace.Domain.ValueObjects
         public override int HashCode()
         {
             return _value.GetHashCode();
-        }
-
-        public static implicit operator Guid(ClassifiedAdId classifiedAdId)
-        {
-            return classifiedAdId._value;
         }
 
         #endregion

@@ -4,15 +4,7 @@ namespace Marketplace.Framework.Helpers
 {
     public abstract class Value<T> : IEquatable<T>
     {
-        #region Initializers
-
-        #endregion
-
         #region Public Methods
-
-        public abstract bool Equals(T other);
-
-        public abstract int HashCode();
 
         public static bool operator ==(Value<T> left, Value<T> right)
         {
@@ -24,6 +16,10 @@ namespace Marketplace.Framework.Helpers
             return !Equals(left, right);
         }
 
+        public abstract bool Equals(T other);
+
+        public abstract int HashCode();
+
         public override bool Equals(object obj)
         {
             if (obj is null) return false;
@@ -32,7 +28,7 @@ namespace Marketplace.Framework.Helpers
 
             if (obj.GetType() != GetType()) return false;
 
-            return Equals((T) obj);
+            return Equals((T)obj);
         }
 
         public override int GetHashCode()

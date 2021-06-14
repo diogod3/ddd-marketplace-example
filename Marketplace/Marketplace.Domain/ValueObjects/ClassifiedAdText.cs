@@ -1,6 +1,5 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using Marketplace.Framework.Helpers;
+﻿using Marketplace.Framework.Helpers;
+using System;
 
 namespace Marketplace.Domain.ValueObjects
 {
@@ -14,23 +13,13 @@ namespace Marketplace.Domain.ValueObjects
 
         #endregion
 
-        #region Properties
-
-        #endregion
-
         #region Initializers
 
-        private ClassifiedAdText(string value)
+        internal ClassifiedAdText(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
                 throw new ArgumentException($"'{nameof(value)}' cannot be null or whitespace.", nameof(value));
-            }
-
-            if (value.Length > ValueMaxLength)
-            {
-                throw new ArgumentOutOfRangeException(nameof(value),
-                    $"Text cannot be longer than {ValueMaxLength} characters");
             }
 
             _value = value;
@@ -42,7 +31,14 @@ namespace Marketplace.Domain.ValueObjects
 
         public static ClassifiedAdText FromString(string title)
         {
+            CheckValidity(title);
+
             return new(title);
+        }
+
+        public static implicit operator string(ClassifiedAdText classifiedAdText)
+        {
+            return classifiedAdText._value;
         }
 
         public override bool Equals(ClassifiedAdText other)
@@ -65,14 +61,23 @@ namespace Marketplace.Domain.ValueObjects
             return _value.GetHashCode();
         }
 
-        public static implicit operator string(ClassifiedAdText classifiedAdText)
-        {
-            return classifiedAdText._value;
-        }
-
         #endregion
 
         #region Private Methods
+
+        private static void CheckValidity(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentException($"'{nameof(value)}' cannot be null or whitespace.", nameof(value));
+            }
+
+            if (value.Length > ValueMaxLength)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value),
+                    $"Text cannot be longer than {ValueMaxLength} characters");
+            }
+        }
 
         #endregion
     }

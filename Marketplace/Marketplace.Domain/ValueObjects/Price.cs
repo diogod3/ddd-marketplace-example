@@ -1,5 +1,5 @@
-﻿using System;
-using Marketplace.Domain.Services;
+﻿using Marketplace.Domain.Services;
+using System;
 
 namespace Marketplace.Domain.ValueObjects
 {
@@ -15,17 +15,8 @@ namespace Marketplace.Domain.ValueObjects
         }
 
         internal Price(decimal amount, string currencyCode)
-            : base(amount, new CurrencyDetails {CurrencyCode = currencyCode})
+            : base(amount, new CurrencyDetails { CurrencyCode = currencyCode })
         {
-        }
-
-
-        public Price(decimal amount) : base(amount, "EUR", null)
-        {
-            if (amount < 0)
-            {
-                throw new ArgumentException("Price cannot be negative", nameof(amount));
-            }
         }
 
         public new static Price FromDecimal(decimal amount, string currency, ICurrencyLookup currencyLookup)

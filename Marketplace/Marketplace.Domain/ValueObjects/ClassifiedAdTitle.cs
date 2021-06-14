@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Marketplace.Framework.Helpers;
+using System;
 using System.Text.RegularExpressions;
-using Marketplace.Framework.Helpers;
 
 namespace Marketplace.Domain.ValueObjects
 {
@@ -14,23 +14,13 @@ namespace Marketplace.Domain.ValueObjects
 
         #endregion
 
-        #region Properties
-
-        #endregion
-
         #region Initializers
 
-        private ClassifiedAdTitle(string value)
+        internal ClassifiedAdTitle(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
                 throw new ArgumentException($"'{nameof(value)}' cannot be null or whitespace.", nameof(value));
-            }
-
-            if (value.Length > ValueMaxLength)
-            {
-                throw new ArgumentOutOfRangeException(nameof(value),
-                    $"Title cannot be longer than {ValueMaxLength} characters");
             }
 
             _value = value;
@@ -42,6 +32,8 @@ namespace Marketplace.Domain.ValueObjects
 
         public static ClassifiedAdTitle FromString(string title)
         {
+            CheckValidity(title);
+
             return new(title);
         }
 
@@ -58,7 +50,14 @@ namespace Marketplace.Domain.ValueObjects
 
             var title = Regex.Replace(supportedTagsReplaced, "<.*?>", string.Empty);
 
+            CheckValidity(title);
+
             return new(title);
+        }
+
+        public static implicit operator string(ClassifiedAdTitle classifiedAdTitle)
+        {
+            return classifiedAdTitle._value;
         }
 
         public override bool Equals(ClassifiedAdTitle other)
@@ -81,14 +80,23 @@ namespace Marketplace.Domain.ValueObjects
             return _value.GetHashCode();
         }
 
-        public static implicit operator string(ClassifiedAdTitle classifiedAdTitle)
-        {
-            return classifiedAdTitle._value;
-        }
-
         #endregion
 
         #region Private Methods
+
+        private static void CheckValidity(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentException($"'{nameof(value)}' cannot be null or whitespace.", nameof(value));
+            }
+
+            if (value.Length > ValueMaxLength)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value),
+                    $"Title cannot be longer than {ValueMaxLength} characters");
+            }
+        }
 
         #endregion
     }

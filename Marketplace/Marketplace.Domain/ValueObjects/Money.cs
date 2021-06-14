@@ -1,7 +1,7 @@
-﻿using System;
-using Marketplace.Domain.Exceptions;
+﻿using Marketplace.Domain.Exceptions;
 using Marketplace.Domain.Services;
 using Marketplace.Framework.Helpers;
+using System;
 
 namespace Marketplace.Domain.ValueObjects
 {
@@ -120,7 +120,7 @@ namespace Marketplace.Domain.ValueObjects
 
         public override int HashCode()
         {
-            return Amount.GetHashCode() + 
+            return Amount.GetHashCode() +
                    Currency.GetHashCode();
         }
 
