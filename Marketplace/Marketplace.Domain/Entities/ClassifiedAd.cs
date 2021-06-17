@@ -3,17 +3,20 @@ using Marketplace.Domain.Exceptions;
 using Marketplace.Domain.ValueObjects;
 using Marketplace.Framework.Helpers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Marketplace.Framework.Aggregates;
 
 namespace Marketplace.Domain.Entities
 {
     /// <summary></summary>
     /// <seealso cref="Marketplace.Framework.Helpers.Entity"/>
-    public class ClassifiedAd : Entity
+    public class ClassifiedAd : AggregateRoot<ClassifiedAdId>
     {
         #region Properties
 
-        /// <summary>Gets the identifier.</summary>
-        public ClassifiedAdId Id { get; private set; }
+        ///// <summary>Gets the identifier.</summary>
+        //public ClassifiedAdId Id { get; private set; }
 
         /// <summary>Gets the owner identifier.</summary>
         public UserId OwnerId { get; private set; }
@@ -32,6 +35,10 @@ namespace Marketplace.Domain.Entities
 
         /// <summary>Gets the state.</summary>
         public ClassifiedAdState State { get; private set; }
+
+        public List<Picture> Pictures { get; } = new List<Picture>();
+
+        private Picture FirstPicture => Pictures.OrderBy(t => t.Order).FirstOrDefault();
 
         #endregion
 
@@ -93,6 +100,12 @@ namespace Marketplace.Domain.Entities
                     State = ClassifiedAdState.PendingReview;
                     break;
 
+                case PictureAddedToClassifiedAd e:
+                    var picture = new Picture(Apply);
+                    ApplyToEntity(picture, e);
+                    Pictures.Add(picture);
+                    break;
+
                 default:
                     throw new EventNotSupportedException(@event);
             }
@@ -109,12 +122,14 @@ namespace Marketplace.Domain.Entities
                             ClassifiedAdState.PendingReview =>
                                 Title is not null &&
                                 Text is not null &&
-                                Price?.Amount > 0,
+                                Price?.Amount > 0 &&
+                                FirstPicture.HasCorrectSize(),
                             ClassifiedAdState.Active =>
                                 Title is not null &&
                                 Text is not null &&
                                 Price?.Amount > 0 &&
-                                ApprovedBy is not null,
+                                ApprovedBy is not null &&
+                                FirstPicture.HasCorrectSize(),
                             _ => true
                         };
 
@@ -166,6 +181,42 @@ namespace Marketplace.Domain.Entities
                 Id = Id
             });
         }
+
+        public void AddPicture(Uri pictureUri, PictureSize size)
+        {
+            Apply(new PictureAddedToClassifiedAd
+            {
+                ClassifiedAdId = Id,
+                PictureId = Guid.NewGuid(),
+                Url = pictureUri.ToString(),
+                Width = size.Width,
+                Height = size.Height,
+                Order = Pictures.Max(t => t.Order) + 1
+            });
+        }
+
+        public void ResizePicture(PictureId pictureId, PictureSize newSize)
+        {
+            var picture = FindPicture(pictureId);
+
+            if (picture is null)
+            {
+                throw new InvalidOperationException("Cannot resize a picture that I don't have");
+            }
+
+            picture.Resize(newSize);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private Picture FindPicture(PictureId id)
+        {
+            return Pictures.FirstOrDefault(t => t.Id == id);
+        }
+
+
 
         #endregion
     }
